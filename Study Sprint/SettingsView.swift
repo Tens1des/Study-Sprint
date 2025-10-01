@@ -79,6 +79,23 @@ struct SettingsView: View {
                             }
                         }
                     }
+                // Language
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "globe").foregroundColor(.teal)
+                            Text("Language").font(.headline)
+                        }
+                        Picker("Language", selection: Binding(get: { app.settings.languageCode }, set: { app.settings.languageCode = $0; app.save() })) {
+                            Text("English").tag("en")
+                            Text("Русский").tag("ru")
+                            Text("Español").tag("es")
+                            Text("Deutsch").tag("de")
+                            Text("Français").tag("fr")
+                        }
+                        .pickerStyle(.segmented)
+                    }
+                }
                     // end last GroupBox
                 }
                 .padding(20)

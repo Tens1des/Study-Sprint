@@ -32,10 +32,17 @@ struct StatisticsView: View {
                     statTile(title: "Total", value: "\(totalSessions)", color: Color.purple)
                     statTile(title: "Focus", value: "\(focusRate)%", color: Color.green)
                 }
+                .padding(.top, 4)
 
-                GroupBox { daysChart }
-                    .groupBoxStyle(.automatic)
-                    .overlay(alignment: .topLeading) { boxHeader("Activity by day") }
+                ZStack(alignment: .topLeading) {
+                    RoundedRectangle(cornerRadius: 20).fill(Color(UIColor.secondarySystemBackground))
+                        .shadow(color: Color.black.opacity(0.08), radius: 12, x: 0, y: 8)
+                    VStack(alignment: .leading) {
+                        boxHeader("Activity by day").padding(.top, 6)
+                        daysChart.padding(.horizontal, 14).padding(.bottom, 14)
+                    }
+                }
+                .frame(maxWidth: .infinity)
 
                 GroupBox {
                     VStack(alignment: .leading, spacing: 12) {
