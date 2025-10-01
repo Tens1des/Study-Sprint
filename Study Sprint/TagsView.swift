@@ -33,7 +33,7 @@ struct TagsView: View {
                     ForEach(app.tags) { tag in
                         HStack(spacing: 14) {
                             ZStack {
-                                RoundedRectangle(cornerRadius: 14).fill(Color.white)
+                                RoundedRectangle(cornerRadius: 14).fill(Color(UIColor.secondarySystemBackground))
                                     .frame(width: 56, height: 56)
                                 Image(systemName: tag.iconSystemName).font(.title2)
                             }
@@ -42,8 +42,8 @@ struct TagsView: View {
                                 Text("\(sessionsCount(for: tag)) sessions").font(.caption).foregroundColor(.secondary)
                             }
                             Spacer()
-                            Button(action: { setDefault(tag) }) { Image(systemName: tag.isDefault ? "star.fill" : "star") }
-                            Button(action: { delete(tag) }) { Image(systemName: "trash") }
+                            if !tag.isDefault { Button(action: { setDefault(tag) }) { Image(systemName: tag.isDefault ? "star.fill" : "star") } }
+                            if !tag.isDefault { Button(action: { delete(tag) }) { Image(systemName: "trash") } }
                         }
                         .padding(14)
                         .background(RoundedRectangle(cornerRadius: 20).fill(Color(UIColor.secondarySystemBackground)))

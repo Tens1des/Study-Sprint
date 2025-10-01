@@ -8,7 +8,17 @@ struct TimerView: View {
     @State private var selectedTagId: UUID?
     @State private var showReflection = false
 
-    private var total: Int { isFocusPhase ? app.settings.defaultFocusSec : app.settings.defaultBreakSec }
+    private var activeTag: Tag? {
+        if let id = selectedTagId { return app.tags.first(where: { $0.id == id }) }
+        return app.tags.first(where: { $0.isDefault })
+    }
+    private var total: Int {
+        if isFocusPhase {
+            return activeTag?.preferredFocusSec ?? app.settings.defaultFocusSec
+        } else {
+            return activeTag?.preferredBreakSec ?? app.settings.defaultBreakSec
+        }
+    }
     private var progress: Double { total == 0 ? 0 : 1 - Double(remaining) / Double(total) }
 
     var body: some View {
@@ -68,6 +78,14 @@ struct TimerView: View {
             .padding(.horizontal, 20)
         }
         .onAppear { resetPhase(focus: true) }
+        .onChange(of: selectedTagId) { _ in
+            // reset remaining according to newly selected subject and current phase
+            resetPhase(focus: isFocusPhase)
+        }
+        .onChange(of: app.tags) { _ in
+            // keep in sync if tags updated (e.g., preferred durations changed)
+            resetPhase(focus: isFocusPhase)
+        }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             guard isRunning, remaining > 0 else { return }
             remaining -= 1
@@ -113,7 +131,7 @@ struct TimerView: View {
 
     private func resetPhase(focus: Bool) {
         isFocusPhase = focus
-        remaining = focus ? app.settings.defaultFocusSec : app.settings.defaultBreakSec
+        remaining = focus ? (activeTag?.preferredFocusSec ?? app.settings.defaultFocusSec) : (activeTag?.preferredBreakSec ?? app.settings.defaultBreakSec)
     }
 
     private func phaseCompleted() {
@@ -130,8 +148,8 @@ struct TimerView: View {
         let session = StudySession(
             tagId: selectedTagId ?? app.tags.first(where: { $0.isDefault })?.id,
             startedAt: Date(),
-            focusDurationSec: app.settings.defaultFocusSec,
-            breakDurationSec: app.settings.defaultBreakSec,
+            focusDurationSec: activeTag?.preferredFocusSec ?? app.settings.defaultFocusSec,
+            breakDurationSec: activeTag?.preferredBreakSec ?? app.settings.defaultBreakSec,
             phaseCompleted: .focus,
             reflectionFocused: reflection
         )

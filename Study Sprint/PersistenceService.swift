@@ -21,10 +21,20 @@ final class PersistenceService {
 
     func loadOrBootstrap() -> Snapshot {
         if let data = try? Data(contentsOf: url), let snap = try? JSONDecoder().decode(Snapshot.self, from: data) {
+            // ensure Default tag exists and is the only default
+            var tags = snap.tags
+            let hasDefaultByName = tags.contains { $0.name == "Default" && $0.isDefault }
+            if !hasDefaultByName {
+                // clear previous defaults
+                tags = tags.map { t in var m = t; m.isDefault = false; return m }
+                let defaultTag = Tag(name: "Default", iconSystemName: "gearshape.fill", colorHex: "6C5CE7", isDefault: true)
+                tags.insert(defaultTag, at: 0)
+                return Snapshot(tags: tags, sessions: snap.sessions, settings: snap.settings, profile: snap.profile, achievements: snap.achievements)
+            }
             return snap
         }
         // bootstrap defaults
-        let defaultTag = Tag(name: "General", iconSystemName: "book.fill", colorHex: "6C5CE7", isDefault: true)
+        let defaultTag = Tag(name: "Default", iconSystemName: "gearshape.fill", colorHex: "6C5CE7", isDefault: true)
         let settings = AppSettings(languageCode: "en", theme: .light, textScale: 1.0, defaultFocusSec: 25*60, defaultBreakSec: 5*60)
         let profile = UserProfile(name: "Student", avatarSystemName: "person.crop.circle.fill")
         let achievements: [Achievement] = []
