@@ -69,7 +69,7 @@ struct TimerView: View {
                             .font(.title3)
                             .foregroundColor(.primary)
                             .frame(width: 64, height: 64)
-                            .background(RoundedRectangle(cornerRadius: 18).fill(Color.white))
+                            .background(RoundedRectangle(cornerRadius: 18).fill(Color(UIColor.secondarySystemBackground)))
                             .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 6)
                     }
                 }

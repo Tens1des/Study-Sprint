@@ -152,8 +152,8 @@ struct StatisticsView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(RoundedRectangle(cornerRadius: 14).fill(isSelected ? Color.accentColor.opacity(0.15) : Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(isSelected ? Color.accentColor : Color.gray.opacity(0.2)))
+                .background(RoundedRectangle(cornerRadius: 14).fill(isSelected ? Color.accentColor.opacity(0.15) : Color(UIColor.secondarySystemBackground)))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(isSelected ? Color.accentColor : Color(UIColor.separator)))
         }
         .foregroundColor(isSelected ? .accentColor : .primary)
     }
@@ -177,7 +177,7 @@ struct StatisticsView: View {
                         Text("\(s.focusDurationSec/60) min").font(.subheadline).foregroundColor(.primary)
                     }
                     .padding(12)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(UIColor.tertiarySystemBackground)))
                 }
             }
         }
